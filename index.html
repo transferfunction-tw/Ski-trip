@@ -158,7 +158,7 @@
                 <h3 class="text-xl font-bold ai-shimmer">Gemini AI 建議</h3>
             </div>
             <div id="ai-content" class="text-sm text-white/80 leading-relaxed max-h-[60vh] overflow-y-auto pr-2"></div>
-            <button onclick="closeAIModal()" class="mt-8 w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition-all">
+            <button onclick="closeAIModal()" class="mt-8 w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-xs font-bold uppercase trackingest hover:bg-white/10 transition-all">
                 關閉視窗
             </button>
         </div>
@@ -246,8 +246,8 @@
                     <div class="absolute -left-[33px] top-1 w-4 h-4 rounded-full border-4 border-slate-900 bg-blue-500"></div>
                     <p class="text-xs text-blue-400 font-black mb-1">02.07 <span class="text-white/40 ml-1 font-normal">SAT</span></p>
                     <div class="glass rounded-2xl p-4">
-                        <h3 class="font-bold text-lg text-white">啟程 ➔ 前線基地</h3>
-                        <p class="text-sm text-white/60 leading-relaxed">抵達仙台機場，直奔安比高原。</p>
+                        <h3 class="font-bold text-lg text-white">桃園 ➔ 花卷 ➔ 安比高原</h3>
+                        <p class="text-sm text-white/60 leading-relaxed">抵達岩手花卷機場，直奔安比高原。辦理入住並領取裝備。</p>
                     </div>
                 </div>
                 <div class="relative">
@@ -255,15 +255,15 @@
                     <p class="text-xs text-white/40 font-black mb-1">02.08 - 02.10</p>
                     <div class="glass rounded-2xl p-4 border-l-4 border-blue-500/50">
                         <h3 class="font-bold text-lg text-white">破風滑行 ➔ 粉雪饗宴</h3>
-                        <p class="text-sm text-white/60 leading-relaxed">全日攻略西森山與 5.5km 長雪道。</p>
+                        <p class="text-sm text-white/60 leading-relaxed">全日攻略西森山與 5.5km 長雪道。享受阿司匹林粉雪與溫泉。</p>
                     </div>
                 </div>
                 <div class="relative">
                     <div class="absolute -left-[33px] top-1 w-4 h-4 rounded-full border-4 border-slate-900 bg-white/20"></div>
                     <p class="text-xs text-white/40 font-black mb-1">02.11 <span class="text-white/40 ml-1 font-normal">WED</span></p>
                     <div class="glass rounded-2xl p-4">
-                        <h3 class="font-bold text-lg text-white">巡禮 ➔ 滿載而歸</h3>
-                        <p class="text-sm text-white/60 leading-relaxed">最後巡禮後返家。</p>
+                        <h3 class="font-bold text-lg text-white">安比高原 ➔ 花卷機場 ➔ 桃園</h3>
+                        <p class="text-sm text-white/60 leading-relaxed">最後巡禮後前往花卷機場，搭機返家。</p>
                     </div>
                 </div>
             </div>
@@ -299,6 +299,7 @@
         <section id="flights" class="tab-content">
             <h2 class="text-2xl font-bold mb-6">飛行情報</h2>
             <div class="space-y-4">
+                <!-- Departure Flight IT258 -->
                 <div class="glass rounded-[2rem] p-6 relative overflow-hidden">
                     <div class="absolute right-[-20px] top-[-20px] text-white/5 text-8xl rotate-12 select-none">
                         <i class="fas fa-plane-departure"></i>
@@ -308,21 +309,56 @@
                             <span class="px-2 py-1 bg-amber-500/20 text-amber-400 text-[9px] rounded font-black uppercase tracking-widest">TigerAir</span>
                             <h3 class="text-xl font-black mt-2">IT 258</h3>
                         </div>
-                        <div class="text-right text-xs font-bold uppercase tracking-widest text-white/40">Feb 07</div>
+                        <div class="text-right">
+                            <p class="text-xs text-white/40 font-bold uppercase tracking-widest">Feb 07</p>
+                            <p class="text-[10px] text-blue-400 font-bold mt-1">Terminal 1</p>
+                        </div>
                     </div>
                     <div class="flex justify-between items-center py-6 border-y border-white/5">
                         <div class="text-center">
-                            <p class="text-3xl font-black">11:40</p>
+                            <p class="text-3xl font-black">12:15</p>
                             <p class="text-[10px] text-white/40 mt-1 uppercase font-bold tracking-widest">TPE</p>
                         </div>
                         <div class="flex flex-col items-center flex-1 px-4">
                             <i class="fas fa-plane text-amber-500 text-xs mb-2"></i>
                             <div class="w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                            <p class="text-[9px] text-white/30 mt-2 italic font-bold">3H 30M</p>
+                            <p class="text-[9px] text-white/30 mt-2 italic font-bold">3H 20M</p>
                         </div>
                         <div class="text-center">
-                            <p class="text-3xl font-black">15:40</p>
-                            <p class="text-[10px] text-white/40 mt-1 uppercase font-bold tracking-widest">SDJ</p>
+                            <p class="text-3xl font-black">16:35</p>
+                            <p class="text-[10px] text-white/40 mt-1 uppercase font-bold tracking-widest">HNA</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Return Flight IT259 -->
+                <div class="glass rounded-[2rem] p-6 relative overflow-hidden">
+                    <div class="absolute right-[-20px] top-[-20px] text-white/5 text-8xl rotate-12 select-none">
+                        <i class="fas fa-plane-arrival"></i>
+                    </div>
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <span class="px-2 py-1 bg-purple-500/20 text-purple-400 text-[9px] rounded font-black uppercase tracking-widest">TigerAir</span>
+                            <h3 class="text-xl font-black mt-2">IT 259</h3>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-white/40 font-bold uppercase tracking-widest">Feb 11</p>
+                            <p class="text-[10px] text-purple-400 font-bold mt-1">HNA Terminal</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center py-6 border-y border-white/5">
+                        <div class="text-center">
+                            <p class="text-3xl font-black">17:50</p>
+                            <p class="text-[10px] text-white/40 mt-1 uppercase font-bold tracking-widest">HNA</p>
+                        </div>
+                        <div class="flex flex-col items-center flex-1 px-4">
+                            <i class="fas fa-plane text-purple-400 text-xs mb-2 scale-x-[-1]"></i>
+                            <div class="w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                            <p class="text-[9px] text-white/30 mt-2 italic font-bold">3H 05M</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-3xl font-black">20:55</p>
+                            <p class="text-[10px] text-white/40 mt-1 uppercase font-bold tracking-widest">TPE</p>
                         </div>
                     </div>
                 </div>
@@ -351,14 +387,6 @@
                 </div>
                 <div id="lift-container" class="space-y-4">
                     <!-- Lift items injected by JS -->
-                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl animate-pulse">
-                        <div class="h-4 w-24 bg-white/10 rounded"></div>
-                        <div class="h-4 w-12 bg-white/10 rounded"></div>
-                    </div>
-                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl animate-pulse">
-                        <div class="h-4 w-32 bg-white/10 rounded"></div>
-                        <div class="h-4 w-12 bg-white/10 rounded"></div>
-                    </div>
                 </div>
                 <p id="lift-notice" class="text-[9px] text-white/30 mt-4 italic text-center leading-relaxed">
                     ※ 狀態根據即時氣象數據模擬，請以雪場廣播為準。
@@ -376,11 +404,6 @@
                         <button class="bg-blue-600 py-3 rounded-xl text-[10px] font-black uppercase">Navigation</button>
                     </div>
                 </div>
-            </div>
-
-            <div class="glass rounded-[2rem] p-6 mb-6 border border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-transparent">
-                <h3 class="text-lg font-bold mb-2">白樺之湯 (Onsen)</h3>
-                <p class="text-sm text-white/60 leading-relaxed">滑雪後的極致救贖。東北最大的露天溫泉。</p>
             </div>
         </section>
 
@@ -502,12 +525,9 @@
             default: { desc: '降雪', icon: '🌨️', class: 'weather-snow' }
         };
 
-        // 智慧模擬纜車狀態
         function updateLiftStatus(windSpeed, weatherCode) {
             const container = document.getElementById('lift-container');
             container.innerHTML = '';
-            
-            // 纜車定義
             const lifts = [
                 { name: 'Appi Gondola (箱型纜車)', type: 'high' },
                 { name: 'Central Quad (四人纜車)', type: 'mid' },
@@ -515,56 +535,28 @@
                 { name: 'Nishimori Lift (西森山區)', type: 'mid' },
                 { name: 'Wonder Lift (兒童樂園)', type: 'low' }
             ];
-
             lifts.forEach(lift => {
-                let status = 'open'; // open, warning, closed
+                let status = 'open';
                 let text = '運行中';
-                
-                // 邏輯 1: 風速影響 (高空纜車對風速敏感)
-                if (lift.type === 'high' && windSpeed > 15) {
-                    status = 'closed';
-                    text = '強風停駛';
-                } else if (lift.type === 'mid' && windSpeed > 12) {
-                    status = 'warning';
-                    text = '減速運行';
-                }
-
-                // 邏輯 2: 天氣代碼影響 (大雪可能關閉高層區)
-                if (weatherCode >= 75 && lift.type === 'high') {
-                    status = 'warning';
-                    text = '視線不佳';
-                }
-
+                if (lift.type === 'high' && windSpeed > 15) { status = 'closed'; text = '強風停駛'; }
+                else if (lift.type === 'mid' && windSpeed > 12) { status = 'warning'; text = '減速運行'; }
+                if (weatherCode >= 75 && lift.type === 'high') { status = 'warning'; text = '視線不佳'; }
                 const dotClass = status === 'open' ? 'status-open' : (status === 'warning' ? 'status-warning' : 'status-closed');
-                
-                container.innerHTML += `
-                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
-                        <span class="text-sm font-bold text-white/80">${lift.name}</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-white/40">${text}</span>
-                            <div class="status-dot ${dotClass}"></div>
-                        </div>
-                    </div>
-                `;
+                container.innerHTML += `<div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5"><span class="text-sm font-bold text-white/80">${lift.name}</span><div class="flex items-center gap-2"><span class="text-[10px] font-bold uppercase tracking-widest text-white/40">${text}</span><div class="status-dot ${dotClass}"></div></div></div>`;
             });
         }
 
         async function fetchWeather() {
             try {
-                // 加入 wind_speed_10m
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=40.00&longitude=140.97&current=temperature_2m,weather_code,wind_speed_10m&timezone=Asia%2FTokyo');
                 const data = await res.json();
                 currentWeatherData = data.current;
                 const currCode = weatherCodes[data.current.weather_code] || weatherCodes.default;
-                
                 document.getElementById('curr-temp').innerText = `${data.current.temperature_2m.toFixed(1)}°C`;
                 document.getElementById('curr-weather').innerText = currCode.desc;
                 document.getElementById('weather-icon-main').innerText = currCode.icon;
                 document.body.classList.add(currCode.class);
-
-                // 更新纜車狀態 (傳入風速與天氣代碼)
                 updateLiftStatus(data.current.wind_speed_10m, data.current.weather_code);
-
             } catch (e) { console.error(e); }
         }
 
