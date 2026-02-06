@@ -3,38 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 APPI Kogen Ski Guide</title>
+    <title>JAPOW Quest 2026 | 安比高原滑雪手冊</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+TC:wght@500;700&display=swap');
         
         :root {
             --glass-bg: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
             --accent-blue: #38bdf8;
-            --accent-tiger: #f59e0b; /* 虎航橘 */
+            --snow-white: #ffffff;
         }
 
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
             color: #f8fafc;
             min-height: 100vh;
             overflow-x: hidden;
+            transition: background 1.5s ease-in-out;
+            background-attachment: fixed;
         }
+
+        .snow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: var(--snow-white);
+            user-select: none;
+            cursor: default;
+            animation-name: fall;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        body.weather-clear { background: linear-gradient(135deg, #075985 0%, #0c4a6e 100%); }
+        body.weather-cloudy { background: linear-gradient(135deg, #334155 0%, #0f172a 100%); }
+        body.weather-snow { background: linear-gradient(135deg, #1e3a8a 0%, #1e1b4b 100%); }
 
         .glass {
             background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
         .tab-content {
             display: none;
-            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .tab-content.active {
@@ -42,7 +75,7 @@
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -52,7 +85,7 @@
 
         .nav-item.active i {
             transform: translateY(-4px);
-            filter: drop-shadow(0 0 8px var(--accent-blue));
+            filter: drop-shadow(0 0 10px var(--accent-blue));
         }
 
         .countdown-item {
@@ -64,7 +97,7 @@
             position: absolute;
             right: -10px;
             top: 0;
-            opacity: 0.5;
+            opacity: 0.3;
         }
 
         .countdown-item:last-child::after {
@@ -74,102 +107,163 @@
         ::-webkit-scrollbar {
             display: none;
         }
+
+        #ai-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+        }
+        
+        #ai-modal.show { display: flex; }
+
+        .ai-shimmer {
+            background: linear-gradient(90deg, #38bdf8, #818cf8, #38bdf8);
+            background-size: 200% auto;
+            animation: shimmer-text 2s linear infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes shimmer-text {
+            to { background-position: 200% center; }
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .status-open { background-color: #22c55e; box-shadow: 0 0 8px #22c55e; }
+        .status-warning { background-color: #eab308; box-shadow: 0 0 8px #eab308; }
+        .status-closed { background-color: #ef4444; box-shadow: 0 0 8px #ef4444; }
     </style>
 </head>
 <body class="pb-28">
 
-    <!-- Header Section -->
-    <header class="p-6 pt-10">
-        <div class="flex justify-between items-start">
-            <div>
-                <p class="text-blue-400 font-semibold tracking-wider text-sm uppercase">Winter Adventure</p>
-                <h1 class="text-3xl font-bold mt-1">2026 APPI Kogen</h1>
+    <div class="snow-container" id="snow-container"></div>
+
+    <!-- AI Response Modal -->
+    <div id="ai-modal" onclick="closeAIModal()">
+        <div class="glass rounded-[2.5rem] p-8 max-w-md w-full relative border border-white/20" onclick="event.stopPropagation()">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                    <i class="fas fa-sparkles text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold ai-shimmer">Gemini AI 建議</h3>
             </div>
-            <div class="glass p-2 rounded-full px-4 text-xs font-medium border-blue-500/30 flex items-center gap-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                ONLINE
+            <div id="ai-content" class="text-sm text-white/80 leading-relaxed max-h-[60vh] overflow-y-auto pr-2"></div>
+            <button onclick="closeAIModal()" class="mt-8 w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition-all">
+                關閉視窗
+            </button>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="p-6 pt-12 relative z-10">
+        <div class="flex justify-between items-start">
+            <div class="flex flex-col">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="px-2 py-0.5 bg-blue-500 text-[10px] font-bold rounded shadow-lg shadow-blue-500/50">ASPIRIN SNOW</span>
+                    <p class="text-blue-400 font-bold tracking-[0.2em] text-xs uppercase">The Powder Quest</p>
+                </div>
+                <h1 class="text-3xl font-black mt-1 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200 leading-tight">
+                    2026 APPI Kogen
+                </h1>
+                <p class="text-white/60 text-sm mt-1">安比高原：追逐極致粉雪之旅</p>
+            </div>
+            <div class="glass p-2 rounded-full px-4 text-[10px] font-bold border-white/20 flex items-center gap-2">
+                <i class="fas fa-circle text-green-500 text-[8px] animate-pulse"></i>
+                LIVE STATUS
             </div>
         </div>
 
         <!-- Countdown Card -->
-        <div class="glass rounded-3xl p-6 mt-8 relative overflow-hidden">
-            <div class="absolute -right-4 -top-4 text-white/5 text-8xl font-bold">SKI</div>
-            <p class="text-white/40 text-xs font-medium uppercase tracking-[0.2em] mb-4 text-center">距離開滑還有</p>
-            <div id="timer" class="flex justify-center gap-6 text-center">
+        <div class="glass rounded-[2rem] p-6 mt-8 relative overflow-hidden border-t border-white/20">
+            <div class="absolute -right-6 -bottom-6 text-white/5 text-9xl font-black select-none">SKI</div>
+            <div class="flex items-center justify-between mb-6">
+                <div class="w-8 h-[2px] bg-blue-400"></div>
+                <p class="text-white/40 text-[10px] font-bold uppercase tracking-[0.3em]">Countdown to First Run</p>
+                <div class="w-8 h-[2px] bg-blue-400"></div>
+            </div>
+            <div id="timer" class="flex justify-center gap-8 text-center">
                 <div class="countdown-item">
-                    <span id="days" class="text-3xl font-bold block">--</span>
-                    <span class="text-[10px] text-white/40 uppercase">Days</span>
+                    <span id="days" class="text-4xl font-black block tracking-tighter">--</span>
+                    <span class="text-[9px] text-white/40 font-bold uppercase mt-1 block">Days</span>
                 </div>
                 <div class="countdown-item">
-                    <span id="hours" class="text-3xl font-bold block">--</span>
-                    <span class="text-[10px] text-white/40 uppercase">Hours</span>
+                    <span id="hours" class="text-4xl font-black block tracking-tighter">--</span>
+                    <span class="text-[9px] text-white/40 font-bold uppercase mt-1 block">Hours</span>
                 </div>
                 <div class="countdown-item">
-                    <span id="mins" class="text-3xl font-bold block">--</span>
-                    <span class="text-[10px] text-white/40 uppercase">Mins</span>
+                    <span id="mins" class="text-4xl font-black block tracking-tighter">--</span>
+                    <span class="text-[9px] text-white/40 font-bold uppercase mt-1 block">Mins</span>
                 </div>
             </div>
         </div>
 
-        <!-- Weather Section -->
+        <!-- Weather Stats Grid -->
         <div class="grid grid-cols-2 gap-4 mt-4">
-            <div class="glass rounded-3xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 bg-blue-500/20 rounded-2xl flex items-center justify-center">
+            <div class="glass rounded-[1.5rem] p-4 flex items-center gap-4 border-l-4 border-blue-400/50">
+                <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
                     <i class="fas fa-temperature-low text-blue-400"></i>
                 </div>
                 <div>
-                    <p class="text-[10px] text-white/40 uppercase">Appi Temp</p>
-                    <p class="text-lg font-bold">-5°C</p>
+                    <p class="text-[9px] text-white/30 font-bold uppercase">Current Temp</p>
+                    <p id="curr-temp" class="text-lg font-bold">--°C</p>
                 </div>
             </div>
-            <div class="glass rounded-3xl p-4 flex items-center gap-4">
-                <div class="w-10 h-10 bg-white/10 rounded-2xl flex items-center justify-center text-xl">
-                    ❄️
+            <div class="glass rounded-[1.5rem] p-4 flex items-center gap-4 border-l-4 border-white/20">
+                <div id="weather-icon-main" class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-xl">
+                    ⏳
                 </div>
                 <div>
-                    <p class="text-[10px] text-white/40 uppercase">Snow Depth</p>
-                    <p class="text-lg font-bold text-blue-300">220 cm</p>
+                    <p class="text-[9px] text-white/30 font-bold uppercase">Condition</p>
+                    <p id="curr-weather" class="text-lg font-bold">讀取中</p>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="px-6 mt-2">
+    <!-- Main Content Area -->
+    <main class="px-6 mt-4 relative z-10">
         
         <!-- 行程分頁 (Itinerary) -->
         <section id="itinerary" class="tab-content active">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold">每日行程</h2>
-                <span class="text-xs text-blue-400">Feb 07 - Feb 11</span>
+            <div class="flex justify-between items-end mb-6">
+                <h2 class="text-2xl font-bold">每日探險規劃</h2>
+                <button onclick="getAIAdvice('itinerary')" class="text-[10px] text-white font-bold bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded-full flex items-center gap-1 transition-all">
+                    <span>✨ 生成探險靈感</span>
+                </button>
             </div>
-            
-            <div class="space-y-6 relative border-l border-white/10 ml-3 pl-6">
-                <!-- Day 1 -->
+            <div class="space-y-6 relative border-l-2 border-dashed border-white/10 ml-3 pl-6">
                 <div class="relative">
-                    <div class="absolute -left-[31px] top-1 w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
-                    <p class="text-xs text-blue-400 font-bold mb-1">Feb 07 <span class="text-white/40 ml-2">SAT</span></p>
+                    <div class="absolute -left-[33px] top-1 w-4 h-4 rounded-full border-4 border-slate-900 bg-blue-500"></div>
+                    <p class="text-xs text-blue-400 font-black mb-1">02.07 <span class="text-white/40 ml-1 font-normal">SAT</span></p>
                     <div class="glass rounded-2xl p-4">
-                        <h3 class="font-bold">桃園 ➔ 仙台 ➔ 安比高原</h3>
-                        <p class="text-sm text-white/60 mt-2">搭機抵達仙台機場，搭乘專車前往度假村。辦理入住並領取租借裝備。</p>
+                        <h3 class="font-bold text-lg text-white">啟程 ➔ 前線基地</h3>
+                        <p class="text-sm text-white/60 leading-relaxed">抵達仙台機場，直奔安比高原。</p>
                     </div>
                 </div>
-                <!-- Day 2-4 (簡略顯示，可按需展開) -->
                 <div class="relative">
-                    <div class="absolute -left-[31px] top-1 w-3 h-3 rounded-full bg-white/20"></div>
-                    <p class="text-xs text-white/40 font-bold mb-1">Feb 08 - Feb 10</p>
-                    <div class="glass rounded-2xl p-4">
-                        <h3 class="font-bold">全日滑雪教學與自由行</h3>
-                        <p class="text-sm text-white/60 mt-2">攻略西森山與 5.5km 長雪道。享受阿司匹林粉雪與溫泉。</p>
+                    <div class="absolute -left-[33px] top-1 w-4 h-4 rounded-full border-4 border-slate-900 bg-white/20"></div>
+                    <p class="text-xs text-white/40 font-black mb-1">02.08 - 02.10</p>
+                    <div class="glass rounded-2xl p-4 border-l-4 border-blue-500/50">
+                        <h3 class="font-bold text-lg text-white">破風滑行 ➔ 粉雪饗宴</h3>
+                        <p class="text-sm text-white/60 leading-relaxed">全日攻略西森山與 5.5km 長雪道。</p>
                     </div>
                 </div>
-                <!-- Day 5 -->
                 <div class="relative">
-                    <div class="absolute -left-[31px] top-1 w-3 h-3 rounded-full bg-white/20"></div>
-                    <p class="text-xs text-white/40 font-bold mb-1">Feb 11 <span class="text-white/40 ml-2">WED</span></p>
+                    <div class="absolute -left-[33px] top-1 w-4 h-4 rounded-full border-4 border-slate-900 bg-white/20"></div>
+                    <p class="text-xs text-white/40 font-black mb-1">02.11 <span class="text-white/40 ml-1 font-normal">WED</span></p>
                     <div class="glass rounded-2xl p-4">
-                        <h3 class="font-bold">安比高原 ➔ 仙台機場 ➔ 桃園</h3>
-                        <p class="text-sm text-white/60 mt-2">最後巡禮後前往機場，搭機返家。</p>
+                        <h3 class="font-bold text-lg text-white">巡禮 ➔ 滿載而歸</h3>
+                        <p class="text-sm text-white/60 leading-relaxed">最後巡禮後返家。</p>
                     </div>
                 </div>
             </div>
@@ -177,18 +271,24 @@
 
         <!-- 清單分頁 (Checklist) -->
         <section id="checklist" class="tab-content">
-            <h2 class="text-xl font-bold mb-6">行李清單</h2>
+            <div class="flex justify-between items-end mb-6">
+                <h2 class="text-2xl font-bold">裝備備戰區</h2>
+                <button onclick="getAIAdvice('checklist')" class="text-[10px] text-white font-bold bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded-full flex items-center gap-1 transition-all">
+                    <span>✨ 智慧穿搭建議</span>
+                </button>
+            </div>
             <div class="space-y-4">
-                <div class="glass rounded-3xl p-6">
-                    <p class="text-xs text-blue-400 font-bold uppercase mb-4 tracking-wider">必備證件</p>
-                    <div class="space-y-3">
-                        <label class="flex items-center gap-3">
-                            <input type="checkbox" class="w-5 h-5 rounded-lg border-white/10 bg-white/5 checked:bg-blue-500">
-                            <span class="text-sm text-white/80">護照與機票 (截圖備份)</span>
-                        </label>
-                        <label class="flex items-center gap-3 pt-3 border-t border-white/5">
-                            <input type="checkbox" class="w-5 h-5 rounded-lg border-white/10 bg-white/5 checked:bg-blue-500">
-                            <span class="text-sm text-white/80">Visit Japan Web QR Code</span>
+                <div class="glass rounded-[2rem] p-6 border-t border-white/10">
+                    <p class="text-[10px] text-blue-400 font-black uppercase mb-4 tracking-widest flex items-center gap-2">
+                        <i class="fas fa-id-card"></i> 核心文件
+                    </p>
+                    <div class="space-y-4">
+                        <label class="flex items-center gap-4 cursor-pointer group">
+                            <div class="w-6 h-6 rounded-lg border-2 border-white/10 flex items-center justify-center transition-all">
+                                <input type="checkbox" class="hidden peer">
+                                <i class="fas fa-check text-[10px] text-blue-400 opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                            </div>
+                            <span class="text-sm text-white/80">護照、機票與 VJW 截圖</span>
                         </label>
                     </div>
                 </div>
@@ -197,70 +297,32 @@
 
         <!-- 航班分頁 (Flights) -->
         <section id="flights" class="tab-content">
-            <h2 class="text-xl font-bold mb-6">航班資訊</h2>
+            <h2 class="text-2xl font-bold mb-6">飛行情報</h2>
             <div class="space-y-4">
-                <!-- Departure Flight IT258 -->
-                <div class="glass rounded-3xl p-6 relative overflow-hidden">
-                    <div class="absolute right-[-10px] top-[-10px] text-white/5 text-7xl rotate-12">
+                <div class="glass rounded-[2rem] p-6 relative overflow-hidden">
+                    <div class="absolute right-[-20px] top-[-20px] text-white/5 text-8xl rotate-12 select-none">
                         <i class="fas fa-plane-departure"></i>
                     </div>
-                    <div class="flex justify-between items-start mb-4">
+                    <div class="flex justify-between items-start mb-6">
                         <div>
-                            <span class="px-2 py-1 bg-amber-500/20 text-amber-400 text-[10px] rounded font-bold uppercase tracking-widest">Departure</span>
-                            <h3 class="text-lg font-bold mt-2">台灣虎航 IT258</h3>
+                            <span class="px-2 py-1 bg-amber-500/20 text-amber-400 text-[9px] rounded font-black uppercase tracking-widest">TigerAir</span>
+                            <h3 class="text-xl font-black mt-2">IT 258</h3>
                         </div>
-                        <div class="text-right">
-                            <p class="text-xs text-white/40">Feb 07</p>
-                            <p class="text-xs text-white/40">TPE T1</p>
-                        </div>
+                        <div class="text-right text-xs font-bold uppercase tracking-widest text-white/40">Feb 07</div>
                     </div>
-                    <div class="flex justify-between items-center py-4 border-y border-white/5">
+                    <div class="flex justify-between items-center py-6 border-y border-white/5">
                         <div class="text-center">
-                            <p class="text-2xl font-bold">11:40</p>
-                            <p class="text-[10px] text-white/40 mt-1 uppercase tracking-widest">TPE</p>
+                            <p class="text-3xl font-black">11:40</p>
+                            <p class="text-[10px] text-white/40 mt-1 uppercase font-bold tracking-widest">TPE</p>
                         </div>
                         <div class="flex flex-col items-center flex-1 px-4">
-                            <p class="text-[10px] text-white/40 mb-1 italic">3h 30m</p>
-                            <div class="w-full h-[1px] bg-white/10 relative">
-                                <i class="fas fa-plane absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] text-amber-500"></i>
-                            </div>
+                            <i class="fas fa-plane text-amber-500 text-xs mb-2"></i>
+                            <div class="w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                            <p class="text-[9px] text-white/30 mt-2 italic font-bold">3H 30M</p>
                         </div>
                         <div class="text-center">
-                            <p class="text-2xl font-bold">15:40</p>
-                            <p class="text-[10px] text-white/40 mt-1 uppercase tracking-widest">SDJ</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Return Flight IT259 -->
-                <div class="glass rounded-3xl p-6 relative overflow-hidden">
-                    <div class="absolute right-[-10px] top-[-10px] text-white/5 text-7xl rotate-12">
-                        <i class="fas fa-plane-arrival"></i>
-                    </div>
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <span class="px-2 py-1 bg-purple-500/20 text-purple-400 text-[10px] rounded font-bold uppercase tracking-widest">Return</span>
-                            <h3 class="text-lg font-bold mt-2">台灣虎航 IT259</h3>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xs text-white/40">Feb 11</p>
-                            <p class="text-xs text-white/40">SDJ Terminal</p>
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center py-4 border-y border-white/5">
-                        <div class="text-center">
-                            <p class="text-2xl font-bold">16:40</p>
-                            <p class="text-[10px] text-white/40 mt-1 uppercase tracking-widest">SDJ</p>
-                        </div>
-                        <div class="flex flex-col items-center flex-1 px-4">
-                            <p class="text-[10px] text-white/40 mb-1 italic">3h 45m</p>
-                            <div class="w-full h-[1px] bg-white/10 relative">
-                                <i class="fas fa-plane absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[10px] text-purple-400 scale-x-[-1]"></i>
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <p class="text-2xl font-bold">20:25</p>
-                            <p class="text-[10px] text-white/40 mt-1 uppercase tracking-widest">TPE</p>
+                            <p class="text-3xl font-black">15:40</p>
+                            <p class="text-[10px] text-white/40 mt-1 uppercase font-bold tracking-widest">SDJ</p>
                         </div>
                     </div>
                 </div>
@@ -269,54 +331,138 @@
 
         <!-- 住宿分頁 (Stay) -->
         <section id="stay" class="tab-content">
-            <h2 class="text-xl font-bold mb-6">住宿資訊</h2>
-            <div class="glass rounded-3xl overflow-hidden mb-6">
-                <img src="https://images.unsplash.com/photo-1549608276-5786d7c1b1bc?auto=format&fit=crop&q=80&w=800" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <h3 class="text-lg font-bold">ANA Crowne Plaza Resort</h3>
-                    <p class="text-xs text-white/40 mt-1 uppercase">Appi Kogen, Iwate</p>
-                    <div class="mt-6 space-y-4">
-                        <div class="flex items-start gap-4">
-                            <i class="fas fa-map-marker-alt text-blue-400 mt-1"></i>
-                            <div>
-                                <p class="text-sm font-semibold">地址</p>
-                                <p class="text-xs text-white/60">岩手縣八幡平市安比高原</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3 mt-8">
-                        <button class="glass py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest">複製地址</button>
-                        <button class="bg-blue-600 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-blue-500/20">導航模式</button>
+            <div class="flex justify-between items-end mb-6">
+                <h2 class="text-2xl font-bold">住宿基地</h2>
+                <button onclick="getAIAdvice('stay')" class="text-[10px] text-white font-bold bg-blue-600 hover:bg-blue-500 px-3 py-1.5 rounded-full flex items-center gap-1 transition-all">
+                    <span>✨ 泡湯美食助手</span>
+                </button>
+            </div>
+
+            <!-- Lift Status Panel -->
+            <div class="glass rounded-[2rem] p-6 mb-6 border border-white/10 relative overflow-hidden">
+                <div class="absolute right-[-10px] top-[-10px] text-white/5 text-6xl rotate-[-10deg] select-none">
+                    <i class="fas fa-cable-car"></i>
+                </div>
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-bold">纜車運行狀態</h3>
+                    <div class="text-[10px] text-white/40 font-bold flex items-center gap-2">
+                        <i class="fas fa-sync-alt animate-spin-slow"></i> LIVE UPDATING
                     </div>
                 </div>
+                <div id="lift-container" class="space-y-4">
+                    <!-- Lift items injected by JS -->
+                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl animate-pulse">
+                        <div class="h-4 w-24 bg-white/10 rounded"></div>
+                        <div class="h-4 w-12 bg-white/10 rounded"></div>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl animate-pulse">
+                        <div class="h-4 w-32 bg-white/10 rounded"></div>
+                        <div class="h-4 w-12 bg-white/10 rounded"></div>
+                    </div>
+                </div>
+                <p id="lift-notice" class="text-[9px] text-white/30 mt-4 italic text-center leading-relaxed">
+                    ※ 狀態根據即時氣象數據模擬，請以雪場廣播為準。
+                </p>
+            </div>
+
+            <!-- Hotel Info -->
+            <div class="glass rounded-[2rem] overflow-hidden mb-6 border border-white/10">
+                <img src="https://images.unsplash.com/photo-1551882547-ff43c63fedfe?auto=format&fit=crop&q=80&w=800" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-black italic">ANA Crowne Plaza Resort</h3>
+                    <p class="text-xs text-white/40 mt-1 font-bold tracking-widest uppercase">Appi Kogen, Iwate</p>
+                    <div class="grid grid-cols-2 gap-3 mt-6">
+                        <button onclick="copyToClipboard('岩手県八幡平市安比高原')" class="glass py-3 rounded-xl text-[10px] font-black uppercase">Copy Map</button>
+                        <button class="bg-blue-600 py-3 rounded-xl text-[10px] font-black uppercase">Navigation</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass rounded-[2rem] p-6 mb-6 border border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-transparent">
+                <h3 class="text-lg font-bold mb-2">白樺之湯 (Onsen)</h3>
+                <p class="text-sm text-white/60 leading-relaxed">滑雪後的極致救贖。東北最大的露天溫泉。</p>
             </div>
         </section>
 
     </main>
 
     <!-- Navigation Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 p-4 px-8 pb-10 glass rounded-t-[40px] border-t border-white/10 z-50">
+    <nav class="fixed bottom-0 left-0 right-0 p-4 px-8 pb-10 glass rounded-t-[3rem] border-t border-white/10 z-50">
         <div class="flex justify-between items-center">
-            <button onclick="switchTab('itinerary')" class="nav-item active flex flex-col items-center transition-all">
-                <i class="fas fa-map-marked-alt text-xl mb-1"></i>
-                <span class="text-[10px] font-bold uppercase tracking-widest">行程</span>
+            <button onclick="switchTab('itinerary')" class="nav-item active flex flex-col items-center transition-all duration-300">
+                <i class="fas fa-mountain-sun text-xl mb-1"></i>
+                <span class="text-[9px] font-black uppercase tracking-widest">行程</span>
             </button>
-            <button onclick="switchTab('checklist')" class="nav-item flex flex-col items-center text-white/40 transition-all">
-                <i class="fas fa-list-check text-xl mb-1"></i>
-                <span class="text-[10px] font-bold uppercase tracking-widest">清單</span>
+            <button onclick="switchTab('checklist')" class="nav-item flex flex-col items-center text-white/40 transition-all duration-300">
+                <i class="fas fa-briefcase text-xl mb-1"></i>
+                <span class="text-[9px] font-black uppercase tracking-widest">清單</span>
             </button>
-            <button onclick="switchTab('flights')" class="nav-item flex flex-col items-center text-white/40 transition-all">
-                <i class="fas fa-plane text-xl mb-1"></i>
-                <span class="text-[10px] font-bold uppercase tracking-widest">航班</span>
+            <button onclick="switchTab('flights')" class="nav-item flex flex-col items-center text-white/40 transition-all duration-300">
+                <i class="fas fa-ticket text-xl mb-1 rotate-[-15deg]"></i>
+                <span class="text-[9px] font-black uppercase tracking-widest">航班</span>
             </button>
-            <button onclick="switchTab('stay')" class="nav-item flex flex-col items-center text-white/40 transition-all">
-                <i class="fas fa-bed text-xl mb-1"></i>
-                <span class="text-[10px] font-bold uppercase tracking-widest">住宿</span>
+            <button onclick="switchTab('stay')" class="nav-item flex flex-col items-center text-white/40 transition-all duration-300">
+                <i class="fas fa-hotel text-xl mb-1"></i>
+                <span class="text-[9px] font-black uppercase tracking-widest">住宿</span>
             </button>
         </div>
     </nav>
 
     <script>
+        const apiKey = "";
+        let currentWeatherData = null;
+
+        async function callGemini(prompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: "你是一位滑雪旅行專家，正在為前往日本安比高原滑雪的遊客提供專業、幽默且精簡的建議。請使用繁體中文回答，並多用雪花、火焰等表情符號。" }] }
+            };
+            let delay = 1000;
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (response.ok) {
+                        const result = await response.json();
+                        return result.candidates?.[0]?.content?.parts?.[0]?.text || "抱歉，我現在無法思考，請稍後再試。";
+                    }
+                } catch (e) {}
+                await new Promise(res => setTimeout(res, delay));
+                delay *= 2;
+            }
+            return "連線逾時，請檢查網路狀態後再試。";
+        }
+
+        async function getAIAdvice(type) {
+            const modal = document.getElementById('ai-modal');
+            const content = document.getElementById('ai-content');
+            modal.classList.add('show');
+            content.innerHTML = '<div class="flex flex-col items-center py-8"><i class="fas fa-snowflake animate-spin text-2xl text-blue-400 mb-4"></i><p class="ai-shimmer font-bold uppercase tracking-widest text-[10px]">AI 正在生成專業建議...</p></div>';
+            let prompt = "";
+            const tempStr = currentWeatherData ? `${currentWeatherData.temperature_2m}°C` : "低溫";
+            if (type === 'checklist') prompt = `目前安比高原氣溫約為 ${tempStr}。請針對「滑雪穿搭」建議，並提醒細節。`;
+            else if (type === 'itinerary') prompt = `這是 2026/2/7-2/11 的安比高原滑雪行程。生成 3 個探險靈感。`;
+            else if (type === 'stay') prompt = `介紹「白樺之湯」溫泉禮儀與必吃特產。`;
+            const advice = await callGemini(prompt);
+            content.innerHTML = `<div class="whitespace-pre-wrap">${advice.replace(/\n/g, '<br>')}</div>`;
+        }
+
+        function closeAIModal() { document.getElementById('ai-modal').classList.remove('show'); }
+
+        function createSnow() {
+            const container = document.getElementById('snow-container');
+            for (let i = 0; i < 30; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.innerHTML = '❄';
+                flake.style.left = Math.random() * 100 + 'vw';
+                flake.style.fontSize = Math.random() * 10 + 10 + 'px';
+                flake.style.animationDuration = Math.random() * 3 + 5 + 's';
+                flake.style.opacity = Math.random();
+                container.appendChild(flake);
+            }
+        }
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
@@ -334,7 +480,7 @@
             const now = new Date().getTime();
             const diff = target - now;
             if (diff <= 0) {
-                document.getElementById('timer').innerHTML = "<span class='text-blue-400 font-bold tracking-widest animate-bounce uppercase'>It's Snow Time! ❄️</span>";
+                document.getElementById('timer').innerHTML = "<span class='text-blue-400 font-black tracking-widest animate-bounce uppercase text-2xl'>Time to Shred! ❄️</span>";
                 return;
             }
             const d = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -344,8 +490,101 @@
             document.getElementById('hours').innerText = h.toString().padStart(2, '0');
             document.getElementById('mins').innerText = m.toString().padStart(2, '0');
         }
+
+        const weatherCodes = {
+            0: { desc: '晴朗', icon: '☀️', class: 'weather-clear' },
+            1: { desc: '晴間多雲', icon: '🌤️', class: 'weather-clear' },
+            2: { desc: '多雲', icon: '⛅', class: 'weather-cloudy' },
+            3: { desc: '陰天', icon: '☁️', class: 'weather-cloudy' },
+            71: { desc: '小雪', icon: '🌨️', class: 'weather-snow' },
+            73: { desc: '中雪', icon: '❄️', class: 'weather-snow' },
+            75: { desc: '大雪', icon: '❄️', class: 'weather-snow' },
+            default: { desc: '降雪', icon: '🌨️', class: 'weather-snow' }
+        };
+
+        // 智慧模擬纜車狀態
+        function updateLiftStatus(windSpeed, weatherCode) {
+            const container = document.getElementById('lift-container');
+            container.innerHTML = '';
+            
+            // 纜車定義
+            const lifts = [
+                { name: 'Appi Gondola (箱型纜車)', type: 'high' },
+                { name: 'Central Quad (四人纜車)', type: 'mid' },
+                { name: 'Sailer Gondola (賽勒纜車)', type: 'high' },
+                { name: 'Nishimori Lift (西森山區)', type: 'mid' },
+                { name: 'Wonder Lift (兒童樂園)', type: 'low' }
+            ];
+
+            lifts.forEach(lift => {
+                let status = 'open'; // open, warning, closed
+                let text = '運行中';
+                
+                // 邏輯 1: 風速影響 (高空纜車對風速敏感)
+                if (lift.type === 'high' && windSpeed > 15) {
+                    status = 'closed';
+                    text = '強風停駛';
+                } else if (lift.type === 'mid' && windSpeed > 12) {
+                    status = 'warning';
+                    text = '減速運行';
+                }
+
+                // 邏輯 2: 天氣代碼影響 (大雪可能關閉高層區)
+                if (weatherCode >= 75 && lift.type === 'high') {
+                    status = 'warning';
+                    text = '視線不佳';
+                }
+
+                const dotClass = status === 'open' ? 'status-open' : (status === 'warning' ? 'status-warning' : 'status-closed');
+                
+                container.innerHTML += `
+                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
+                        <span class="text-sm font-bold text-white/80">${lift.name}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-white/40">${text}</span>
+                            <div class="status-dot ${dotClass}"></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function fetchWeather() {
+            try {
+                // 加入 wind_speed_10m
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=40.00&longitude=140.97&current=temperature_2m,weather_code,wind_speed_10m&timezone=Asia%2FTokyo');
+                const data = await res.json();
+                currentWeatherData = data.current;
+                const currCode = weatherCodes[data.current.weather_code] || weatherCodes.default;
+                
+                document.getElementById('curr-temp').innerText = `${data.current.temperature_2m.toFixed(1)}°C`;
+                document.getElementById('curr-weather').innerText = currCode.desc;
+                document.getElementById('weather-icon-main').innerText = currCode.icon;
+                document.body.classList.add(currCode.class);
+
+                // 更新纜車狀態 (傳入風速與天氣代碼)
+                updateLiftStatus(data.current.wind_speed_10m, data.current.weather_code);
+
+            } catch (e) { console.error(e); }
+        }
+
+        function copyToClipboard(text) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            const btn = event.currentTarget;
+            const originalText = btn.innerText;
+            btn.innerText = 'COPIED!';
+            setTimeout(() => btn.innerText = originalText, 2000);
+        }
+
+        createSnow();
         setInterval(updateCountdown, 1000);
         updateCountdown();
+        fetchWeather();
     </script>
 </body>
 </html>
